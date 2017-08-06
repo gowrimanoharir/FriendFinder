@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Friend Finder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class='row'>
+
+            <div class="panel panel-default">
+                <div class="panel-heading phdr">
+                    <h3 class="panel-title ts-hfnt">About You</h3>
+                </div>
+                        
+                <div class="panel-body">
+                    <form action="POST" role="form">
+
+                        <div class="form-group">
+                            <label for="name">Name (Required)</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="photo">Link to Photo (Required)</label>
+                            <input type="text" class="form-control" id="photo">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" class="form-control" id="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name">Unique ID</label>
+                            <input type="text" class="form-control" id="uid">
+                        </div>
+
+                    </form>
+
+                    <div>
+                        <button class="btn btn-primary" id="js-submit">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href='/api/friends'>API Friends List</a>
+                <!--span> | </span>
+            <a href='/api/waitlist'>API Wait List</a-->
+        </div>
+    </div>
+
+    
+</body>
+</html>

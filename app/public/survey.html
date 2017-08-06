@@ -32,7 +32,7 @@
                             <input type="text" class="form-control" id="photo">
                         </div>
 
-                        <div class="form-group">
+                        <!--div class="form-group">
                             <label for="email">Email</label>
                             <input type="text" class="form-control" id="email">
                         </div>
@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <label for="name">Unique ID</label>
                             <input type="text" class="form-control" id="uid">
-                        </div>
+                        </div-->
 
                     </form>
 
@@ -59,6 +59,24 @@
         </div>
     </div>
 
+<script type="text/javascript">
+    $("#js-submit").on("click", function(e){
+        e.preventDefault();
+        var newUser = {
+            name: $("#name").val().trim(),
+            phone: $("#photo").val().trim(),
+            scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
+        }
+        console.log(newUser);
+        $.post("/api/friends", newUser)
+            .done(function(data){
+                console.log(data);
+        });
+        $(".form-control").val("");
+    });
+    
+
+</script>
     
 </body>
 </html>

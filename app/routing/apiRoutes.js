@@ -1,23 +1,29 @@
 var path = require('path');
-var friends = require('../data/friends')
+var friends = require('../data/friends');
+var questions = require('../data/questions');
 
 module.exports = function(app){
   
     app.get('/api/friends', function(req, res){
         res.json(friends);
     });
+
+    app.get('/api/survey', function(req, res){
+        res.json(questions);
+    });    
   
 
     app.post('/api/friends', function(req, res){
         var newUser = req.body;
-        friends.push(newUser);
         var matchUser = findMatch(newUser);
         res.json(matchUser);
+        friends.push(newUser);
     });    
 
 };
 
 function findMatch(newUser){
+    var bestMatchDiff=0, tmpScoreDiff, bestMatch=0;
     friends.forEach(function(curUser, i){
         console.log(bestMatchDiff, tmpScoreDiff, bestMatch);
         tmpScoreDiff=0;
@@ -30,6 +36,8 @@ function findMatch(newUser){
             console.log(bestMatchDiff, tmpScoreDiff, bestMatch);
         }
     });
+
+    console.log(friends[bestMatch]);
     return friends[bestMatch];
 }
 

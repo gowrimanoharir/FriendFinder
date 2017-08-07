@@ -24,31 +24,40 @@
 
                         <div class="form-group">
                             <label for="name">Name (Required)</label>
-                            <input type="text" class="form-control" id="name">
+                            <input type="text" class="form-control" id="name" required>
                         </div>
 
                         <div class="form-group">
                             <label for="photo">Link to Photo (Required)</label>
-                            <input type="text" class="form-control" id="photo">
+                            <input type="text" class="form-control" id="photo" required>
                         </div>
+
+                        <div id="surveyQuestions">   
+
+                        </div>
+
+                        <template id="ans-options">
+                                <option selected disabled hidden>Select an Option</option>                                
+                                <option value="1">1 (Strongly Disagree)</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5 (Strong Agree)</option>
+                        </template>
 
                         <!--div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email">
-                        </div>
-
-                        <div class="form-group">
                             <label for="name">Unique ID</label>
                             <input type="text" class="form-control" id="uid">
                         </div-->
 
-                    </form>
+
 
                     <div>
                         <button class="btn btn-primary" id="js-submit">
                             Submit
                         </button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -60,14 +69,48 @@
     </div>
 
 <script type="text/javascript">
+
+    $.get("/api/survey", function(data) {
+        console.log(JSON.stringify(data));
+        if (data) {
+            data.forEach( function(r, i) {
+                var questionDiv = $('<div>');                
+                var labelQuestion = $('<label>');                
+                var selectAns = $('<select>');
+                var optionAns = $('#ans-options').html().trim();
+                questionDiv.addClass('form-group');
+                questionDiv.append('<h3>Question ' + (i+1) + '</h3>');
+                
+                labelQuestion.attr('for', 'q'+(i+1));
+                labelQuestion.text(data[i]);
+
+                selectAns.addClass('form-control');
+                selectAns.attr('id', 'q'+(i+1));
+                selectAns.attr('style', 'width: 20%');
+                selectAns.append(optionAns);
+
+                questionDiv.append(labelQuestion).append(selectAns);
+                $('#surveyQuestions').append(questionDiv);
+            })
+            
+        }
+        else {
+                questionDiv.append('<h2>Sorry page cannot be displayed</h2>');
+        }
+    });
+
+
+
     $("#js-submit").on("click", function(e){
         e.preventDefault();
         var newUser = {
             name: $("#name").val().trim(),
             phone: $("#photo").val().trim(),
-            scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
+            scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(),
+                    $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()]
+            //scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
         }
-        console.log(newUser);
+        console.log(newUser.scores);
         $.post("/api/friends", newUser)
             .done(function(data){
                 console.log(data);

@@ -39,6 +39,12 @@ function findMatch(newUser){
         for(j=0; j<newUser.scores.length; j++){
             tmpScoreDiff+=Math.abs(newUser.scores[j]-curUser.scores[j]);
         }
+        
+        /*tmpScoreDiff=Math.abs(newUser.scores.reduce(function(sum, value){
+            return sum+value;
+        }, 0) - (curUser.scores.reduce(function(sum, value){
+            return sum+value;
+        }, 0)));*/
         if(bestMatchDiff>tmpScoreDiff || i===0){
             bestMatchDiff=tmpScoreDiff;
             bestMatch=i;

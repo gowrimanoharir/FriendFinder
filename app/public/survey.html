@@ -24,12 +24,12 @@
 
                         <div class="form-group">
                             <label for="name">Name (Required)</label>
-                            <input type="text" class="form-control" id="name" required>
+                            <input type="text" class="form-control" id="name">
                         </div>
 
                         <div class="form-group">
                             <label for="photo">Link to Photo (Required)</label>
-                            <input type="text" class="form-control" id="photo" required>
+                            <input type="text" class="form-control" id="photo">
                         </div>
 
                         <div id="surveyQuestions">   
@@ -67,8 +67,8 @@
                                 <option value="5">5 (Strong Agree)</option>
                         </template>
 
-                    <div>
-                        <button class="btn btn-primary" id="js-submit">
+                    <div id="js-submit">
+                        <button class="btn btn-primary js-submit">
                             Submit
                         </button>
                     </div>
@@ -78,8 +78,8 @@
         </div>
         <div>
             <a href='/api/friends'>API Friends List</a>
-                <!--span> | </span>
-            <a href='/api/waitlist'>API Wait List</a-->
+                <span> | </span>
+            <a href='/api/survey'>API Survey Questions</a>
         </div>
     </div>
 
@@ -116,24 +116,34 @@
 
 
 
-    $("#js-submit").on("click", function(e){
+    $("#js-submit").on("click", ".js-submit", function(e){
         e.preventDefault();
-        var newUser = {
-            name: $("#name").val().trim(),
-            photo: $("#photo").val().trim(),
-            scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(),
-                    $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()]
-            //scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
+        var name = $("#name").val().trim();
+        var photo = $("#photo").val().trim();
+        var scores = [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(),
+                    $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()];
+        console.log(name, photo, scores);
+        if (name !== '' && photo !== '' && !(scores.includes(null)))
+        {        
+            var newUser = {
+                name: name,
+                photo: photo,
+                scores: scores
+                //scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
+            }
+            console.log(newUser.scores);
+            $.post("/api/friends", newUser)
+                .done(function(data){
+                    $('#js-matchName').text(data.name);
+                    $('#js-matchImg').attr('src', data.photo);
+                    $("#match-modal").modal('show');
+                    console.log(data);
+            });
+            $(".form-control").val("");
         }
-        console.log(newUser.scores);
-        $.post("/api/friends", newUser)
-            .done(function(data){
-                $('#js-matchName').text(data.name);
-                $('#js-matchImg').attr('src', data.photo);
-                $("#match-modal").modal('show');
-                console.log(data);
-        });
-        $(".form-control").val("");
+        else{
+            alert('no field can be empty');
+        }
     });
     
 

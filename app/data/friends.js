@@ -15,5 +15,7 @@ var friendsList = [{
     },
 ];
 
+["1", "2", "3", "4", "3", "2", "2", "1", "3", "3"]
+
 
 module.exports = friendsList;

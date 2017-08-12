@@ -31,20 +31,24 @@ module.exports = function(app){
 
 };
 
+//function to find the best friend match
 function findMatch(newUser){
+    //initiate bestmatch score difference as 0 temporarily
     var bestMatchDiff=0, tmpScoreDiff, bestMatch=0;
+
+    //loop through the array of friends
     friends.forEach(function(curUser, i){
         console.log(bestMatchDiff, tmpScoreDiff, bestMatch);
+        //initiate the temp score difference variable that will hold the difference of scores between current user in array vs new user
         tmpScoreDiff=0;
+
+        //loop through the scores of the current user and new user to find the total difference
         for(j=0; j<newUser.scores.length; j++){
             tmpScoreDiff+=Math.abs(newUser.scores[j]-curUser.scores[j]);
         }
         
-        /*tmpScoreDiff=Math.abs(newUser.scores.reduce(function(sum, value){
-            return sum+value;
-        }, 0) - (curUser.scores.reduce(function(sum, value){
-            return sum+value;
-        }, 0)));*/
+        /*if the best natch difference is greater than the calculated difference for current user & new user then swap the score and store
+        the index of current user in bestMatch variable*/
         if(bestMatchDiff>tmpScoreDiff || i===0){
             bestMatchDiff=tmpScoreDiff;
             bestMatch=i;
@@ -53,6 +57,7 @@ function findMatch(newUser){
     });
 
     console.log(friends[bestMatch]);
+    //return the final best matched user details
     return friends[bestMatch];
 }
 

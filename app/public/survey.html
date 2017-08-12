@@ -9,10 +9,17 @@
     <link rel="stylesheet" href="https://bootswatch.com/superhero/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!--Styling for the form border when in focus and image height and width when to display in result modal -->
     <style>
         .form-control:focus {
             border-color: red;
-        }        
+        }
+        
+        .imgmatch {
+            height: 200px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -27,6 +34,7 @@
                 <div class="panel-body">
                     <form action="POST" role="form">
 
+                        <!-- displays the first two form fields for name and photo link-->
                         <div class="form-group">
                             <label for="name"><h4>Name (Required)</h4></label>
                             <input type="text" class="form-control" id="name">
@@ -37,48 +45,47 @@
                             <input type="text" class="form-control" id="photo">
                         </div>
 
+                        <!--Placeholder div to display the questions based on get jQuery call below -->
                         <div id="surveyQuestions">   
 
                         </div>
 
-
+                        <!--Modal that will display error message if any of the fields are left blank trigger by jQuery below-->
                         <div id="error-modal"class="modal fade">
                         <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>                            
-                            <div class="modal-body">
-                                <p id="js-error">No fields can be blank, please enter values and submit again</p>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>                            
+                                <div class="modal-body">
+                                    <h4 id="js-error" class="text-center">Please fill in the blank fields and submit</h4>
+                                </div>
                             </div>
                         </div>
                         </div>
-                        </div>
 
+                        <!--Modal to display the matched friend triggered by jQuery below-->
                         <div id="match-modal"class="modal fade">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Meet your Friend</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="js-matchName"></p>
-                                <img id="js-matchImg">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h3 id="js-matchName" class="modal-title text-center"></h3>                                    
+                                </div>
+                                <div class="modal-body">
+                                    <img id="js-matchImg" class="center-block imgmatch">
+                                </div>
                             </div>
                         </div>
                         </div>
                         
-
+                        <!-- Template definition for the options dropdown that will be used when Questions are rendered in through
+                        jQuery below-->
                         <template id="ans-options">
                                 <option selected disabled hidden>Select an Option</option>                                
                                 <option value="1">1 (Strongly Disagree)</option>
@@ -88,6 +95,7 @@
                                 <option value="5">5 (Strong Agree)</option>
                         </template>
 
+                        <!-- Submit button-->
                     <div id="js-submit">
                         <button class="btn btn-primary js-submit">
                             Submit
@@ -98,34 +106,47 @@
             </div>
         </div>
         <div>
+            <!--Api links to get the json data of friends list and questions list-->            
             <a href='/api/friends'>API Friends List</a>
                 <span> | </span>
             <a href='/api/survey'>API Survey Questions</a>
         </div>
     </div>
 
+
 <script type="text/javascript">
 
+    //when the survey page is loaded this api will be called to get the questions and dynamically adds the questions to page
     $.get("/api/survey", function(data) {
         console.log(JSON.stringify(data));
         if (data) {
+            //loops through each question in the array
             data.forEach( function(r, i) {
                 var questionDiv = $('<div>');                
-                var labelQuestion = $('<label>');                
+                var labelQuestion = $('<h5>');                
                 var selectAns = $('<select>');
                 var optionAns = $('#ans-options').html().trim();
+
+                //adds the question number header
                 questionDiv.addClass('form-group');
                 questionDiv.append('<h4>Question ' + (i+1) + '</h4>');
                 
+                //adds the actual question
                 labelQuestion.attr('for', 'q'+(i+1));
                 labelQuestion.text(data[i]);
-
+                
+                //this adds the dropdown box
                 selectAns.addClass('form-control');
                 selectAns.attr('id', 'q'+(i+1));
                 selectAns.attr('style', 'width: 20%');
-                selectAns.append(optionAns);
 
+                //this adds the template that should be displayed as options
+                selectAns.append(optionAns);
+                
+                //join all elements together
                 questionDiv.append(labelQuestion).append(selectAns);
+
+                //add it to surbey question div
                 $('#surveyQuestions').append(questionDiv);
             });
             
@@ -138,30 +159,37 @@
 
 
     $("#js-submit").on("click", ".js-submit", function(e){
+        //prevents the default form post
         e.preventDefault();
+
+        //gets the user input and saves in variables
         var name = $("#name").val().trim();
         var photo = $("#photo").val().trim();
         var scores = [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(),
                     $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val()];
-        console.log(name, photo, scores);
+
+        //check to make sure that no fields are empty
         if (name !== '' && photo !== '' && !(scores.includes(null)))
-        {        
+        {   
+            //add the variables to user object
             var newUser = {
                 name: name,
                 photo: photo,
                 scores: scores
             }
-            console.log(newUser.scores);
+
+            //calls the post method to send the user inputs to api route which will return the matched user
             $.post("/api/friends", newUser)
+                //once done pass the matched user to be displayed in the modal
                 .done(function(data){
                    $('#js-matchName').text(data.name);
                     $('#js-matchImg').attr('src', data.photo);
                     $("#match-modal").modal('show');
-                    console.log(data);
             });
             $(".form-control").val("");
         }
         else{
+            //if any of the fields are blank display the error modal
             $("#error-modal").modal('show');
         }
     });

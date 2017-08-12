@@ -6,34 +6,56 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Friend Finder</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/superhero/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+    <style>
+        .form-control:focus {
+            border-color: red;
+        }        
+    </style>
 </head>
 <body>
     <div class="container">
         <div class='row'>
 
             <div class="panel panel-default">
-                <div class="panel-heading phdr">
-                    <h3 class="panel-title ts-hfnt">About You</h3>
+                <div class="panel-heading phdr text-center">
+                    <h2>About You</h2><span> Please answer below questions to find your friend</span>
                 </div>
                         
                 <div class="panel-body">
                     <form action="POST" role="form">
 
                         <div class="form-group">
-                            <label for="name">Name (Required)</label>
+                            <label for="name"><h4>Name (Required)</h4></label>
                             <input type="text" class="form-control" id="name">
                         </div>
 
                         <div class="form-group">
-                            <label for="photo">Link to Photo (Required)</label>
+                            <label for="photo"><h4>Link to Photo (Required)</h4></label>
                             <input type="text" class="form-control" id="photo">
                         </div>
 
                         <div id="surveyQuestions">   
 
+                        </div>
+
+
+                        <div id="error-modal"class="modal fade">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>                            
+                            <div class="modal-body">
+                                <p id="js-error">No fields can be blank, please enter values and submit again</p>
+                            </div>
+                        </div>
+                        </div>
                         </div>
 
                         <div id="match-modal"class="modal fade">
@@ -50,7 +72,6 @@
                                 <img id="js-matchImg">
                             </div>
                             <div class="modal-footer">
-                                <!--button type="button" class="btn btn-primary">Save changes</button-->
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             </div>
                             </div>
@@ -94,7 +115,7 @@
                 var selectAns = $('<select>');
                 var optionAns = $('#ans-options').html().trim();
                 questionDiv.addClass('form-group');
-                questionDiv.append('<h3>Question ' + (i+1) + '</h3>');
+                questionDiv.append('<h4>Question ' + (i+1) + '</h4>');
                 
                 labelQuestion.attr('for', 'q'+(i+1));
                 labelQuestion.text(data[i]);
@@ -129,12 +150,11 @@
                 name: name,
                 photo: photo,
                 scores: scores
-                //scores: [1, 3, 4, 4, 3, 2, 1, 4, 4, 5]
             }
             console.log(newUser.scores);
             $.post("/api/friends", newUser)
                 .done(function(data){
-                    $('#js-matchName').text(data.name);
+                   $('#js-matchName').text(data.name);
                     $('#js-matchImg').attr('src', data.photo);
                     $("#match-modal").modal('show');
                     console.log(data);
@@ -142,7 +162,7 @@
             $(".form-control").val("");
         }
         else{
-            alert('no field can be empty');
+            $("#error-modal").modal('show');
         }
     });
     

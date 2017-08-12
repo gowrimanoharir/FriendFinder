@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 //instantiate express instance
 var app = express();
 
+app.use(express.static("public/assets"));
+
 //define the port variable to use process env or port no whichever is available
 var PORT = process.env.PORT || 4000;
 
